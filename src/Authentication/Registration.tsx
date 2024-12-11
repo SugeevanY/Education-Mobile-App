@@ -1,5 +1,13 @@
 import * as React from 'react';
-import {View, Text, TextInput, Button, StyleSheet, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
 interface IProps {}
@@ -27,27 +35,41 @@ const RegisterScreen: React.FunctionComponent<IProps> = () => {
       return;
     }
     setError('');
-    navigation.navigate('Login');
+    navigation.navigate('LoginScreen');
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Register</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
-      <Button title="Register" onPress={handleRegister} />
+      <Text style={styles.title}>Create Account</Text>
+      <View style={styles.inputFields}>
+        <TextInput
+          style={styles.input}
+          placeholder="Username"
+          value={username}
+          onChangeText={setUsername}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      </View>
+
+      <View style={styles.button}>
+        <Button title="Register" onPress={handleRegister} />
+      </View>
+      <View style={styles.link}>
+        <Text>Already have an account?</Text>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('LoginScreen');
+          }}>
+          <Text style={styles.linkText}>Login</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -59,9 +81,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    gap: 60,
+  },
+  inputFields: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 10,
+    width: '90%',
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 20,
   },
@@ -69,12 +99,29 @@ const styles = StyleSheet.create({
     width: '80%',
     height: 40,
     marginVertical: 10,
-    borderWidth: 1,
     padding: 10,
     borderRadius: 5,
+    backgroundColor: '#D8D8D8',
   },
   errorText: {
+    width: '80%',
     color: 'red',
     marginBottom: 10,
+  },
+  button: {
+    width: '60%',
+    height: 60,
+    color: 'white',
+    borderRadius: 5,
+  },
+  link: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 5,
+  },
+  linkText: {
+    color: 'blue',
+    textDecorationLine: 'underline',
   },
 });
