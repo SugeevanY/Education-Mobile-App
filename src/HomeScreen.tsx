@@ -1,32 +1,65 @@
 import axios from 'axios';
 import * as React from 'react';
-import {View, Text, FlatList, TouchableOpacity, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Button,
+} from 'react-native';
 import {AppContext} from '../App';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
 interface Props {
-  route: any;
+  userName: string;
 }
 
-const HomeScreen: React.FunctionComponent<Props> = props => {
-  const {username} = props.route.params;
-  const {itemCount, incrementCount} = React.useContext(AppContext);
+type navParams = {
+  userName: string;
+};
+
+const HomeScreen: React.FunctionComponent<Props> = () => {
+  const route = useRoute();
+  const {params} = route as {params: navParams};
+  const {itemCount, incrementCount, Authenticate} =
+    React.useContext(AppContext);
   const [data, setData] = React.useState<any[]>([]);
+  const navigation = useNavigation();
 
   React.useEffect(() => {
     axios
-      .get('https://jsonplaceholder.typicode.com/posts')
-      .then(response => setData(response.data.slice(0, 10)))
+      .get('https://dummyjson.com/c/017c-3473-450b-98f6')
+      .then(response => setData(response.data.courses))
       .catch(error => console.error(error));
   }, []);
+
+  console.log(params.userName);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome, {username}</Text>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('LoginScreen');
+          Authenticate();
+        }}
+        style={styles.logoutButton}>
+        <Text>Logout</Text>
+      </TouchableOpacity>
+      <Text style={styles.title}>Welcome, {params.userName}</Text>
       <FlatList
         data={data}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => item.courseId.toString()}
         renderItem={({item}) => (
           <TouchableOpacity style={styles.card} onPress={incrementCount}>
-            <Text style={styles.cardTitle}>{item.title}</Text>
+            <Image
+              source={{
+                uri: 'https://www.pexels.com/photo/close-up-photo-of-programming-of-codes-546819/',
+              }}
+              style={{width: 200, height: 200}}
+            />
+            <Text style={styles.cardTitle}>{item.courseName}</Text>
             <Text>{item.body}</Text>
           </TouchableOpacity>
         )}
@@ -74,5 +107,15 @@ const styles = StyleSheet.create({
   floatingButtonText: {
     color: 'white',
     fontSize: 18,
+  },
+  logoutButton: {
+    backgroundColor: 'grey',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    width: 65,
+    height: 35,
+    borderRadius: 20,
   },
 });

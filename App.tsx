@@ -8,33 +8,45 @@
 import {NavigationContainer} from '@react-navigation/native';
 import React, {createContext, useState} from 'react';
 import {SafeAreaView, Text} from 'react-native';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 import LoginScreen from './src/Authentication/LoginScreen';
 import RegisterScreen from './src/Authentication/Registration';
 import HomeScreen from './src/HomeScreen';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-export const AppContext = createContext({
+interface AppContextType {
+  itemCount: number;
+  incrementCount: () => void;
+  Authenticate: () => void;
+  user: string;
+  updateUser: (name: string) => void;
+}
+
+const defaultState: AppContextType = {
   itemCount: 0,
   incrementCount: () => {},
   Authenticate: () => {},
-});
+  user: 'Guest',
+  updateUser: () => {},
+};
+
+export const AppContext = createContext<AppContextType>(defaultState);
+
+export const UserNameContext = createContext(null);
 
 type RootStackParamList = {
   RegisterScreen: undefined;
   LoginScreen: undefined;
+  HomeScreen: undefined;
 };
 
-type HomeStackParamList = {
-  HomeScreen: {username: string};
-};
-
-const HomeStack = createNativeStackNavigator<HomeStackParamList>();
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 function App(): React.JSX.Element {
   const [itemCount, setItemCount] = useState(0);
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState('');
 
   const Authenticate = () => {
     setIsAuthenticated(!isAuthenticated);
@@ -44,27 +56,36 @@ function App(): React.JSX.Element {
     setItemCount(itemCount + 1);
   };
 
-  return (
-    // <SafeAreaView>
+  const updateUser = (name: string) => {
+    setUser(name);
+  };
 
+  return (
     <NavigationContainer>
-      <AppContext.Provider value={{itemCount, incrementCount, Authenticate}}>
-        {/* {isAuthenticated ? (
-          <HomeStack.Navigator initialRouteName="HomeScreen">
-            <HomeStack.Screen name="HomeScreen" component={HomeScreen} />
-          </HomeStack.Navigator>
-        ) : ( */}
-        <RootStack.Navigator initialRouteName="RegisterScreen">
-          <RootStack.Screen name="RegisterScreen" component={RegisterScreen} />
-          <RootStack.Screen name="LoginScreen" component={LoginScreen} />
-        </RootStack.Navigator>
-        {/* )} */}
-        {/* <HomeScreen route={{params: {username: 'test'}}} /> */}
-        <Text>App</Text>
+      <AppContext.Provider
+        value={{itemCount, incrementCount, Authenticate, updateUser, user}}>
+        <SafeAreaProvider>
+          <RootStack.Navigator initialRouteName="RegisterScreen">
+            <RootStack.Screen
+              name="RegisterScreen"
+              component={RegisterScreen}
+              options={{headerShown: false}}
+            />
+            <RootStack.Screen
+              name="LoginScreen"
+              component={LoginScreen}
+              options={{headerShown: false}}
+            />
+            <RootStack.Screen
+              name="HomeScreen"
+              component={HomeScreen}
+              options={{headerShown: false}}
+            />
+            {/* )} */}
+          </RootStack.Navigator>
+        </SafeAreaProvider>
       </AppContext.Provider>
     </NavigationContainer>
-
-    // </SafeAreaView>
   );
 }
 
