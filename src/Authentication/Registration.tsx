@@ -7,8 +7,11 @@ import {
   StyleSheet,
   Alert,
   TouchableOpacity,
+  Modal,
+  Image,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+const success = require('../asserts/success.png');
 
 interface IProps {}
 
@@ -17,6 +20,7 @@ const RegisterScreen: React.FunctionComponent<IProps> = () => {
   const [password, setPassword] = React.useState('');
   const [error, setError] = React.useState('');
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = React.useState(false);
 
   const validatePassword = (password: string) => {
     const regex = /^(?=.*[!@#$%^&*])(?=.{8,})/;
@@ -35,6 +39,11 @@ const RegisterScreen: React.FunctionComponent<IProps> = () => {
       return;
     }
     setError('');
+    setModalVisible(true);
+  };
+
+  const onClose = () => {
+    setModalVisible(false);
     navigation.navigate('LoginScreen');
   };
 
@@ -70,6 +79,18 @@ const RegisterScreen: React.FunctionComponent<IProps> = () => {
           <Text style={styles.linkText}>Login</Text>
         </TouchableOpacity>
       </View>
+
+      <Modal animationType="fade" transparent={true} visible={modalVisible}>
+        <View style={styles.container}>
+          <View style={styles.modalBox}>
+            <Text style={styles.title2}>Registration Successful!</Text>
+            <Image source={success} style={styles.image} />
+            <TouchableOpacity onPress={onClose} style={styles.confirmButton}>
+              <Text>Done</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -123,5 +144,34 @@ const styles = StyleSheet.create({
   linkText: {
     color: 'blue',
     textDecorationLine: 'underline',
+  },
+  modalBox: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 40,
+    width: '60%',
+    height: '40%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    elevation: 5,
+  },
+  title2: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  image: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+  },
+  confirmButton: {
+    width: '30%',
+    height: 30,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'lightgreen',
   },
 });
