@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  Button,
 } from 'react-native';
 import {AppContext} from '../App';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -35,7 +34,7 @@ const HomeScreen: React.FunctionComponent<Props> = () => {
       .catch(error => console.error(error));
   }, []);
 
-  console.log(params.userName);
+  console.log(data);
 
   return (
     <View style={styles.container}>
@@ -55,12 +54,13 @@ const HomeScreen: React.FunctionComponent<Props> = () => {
           <TouchableOpacity style={styles.card} onPress={incrementCount}>
             <Image
               source={{
-                uri: 'https://www.pexels.com/photo/close-up-photo-of-programming-of-codes-546819/',
+                uri: 'https://images.unsplash.com/2/01.jpg?q=80&w=2500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
               }}
-              style={{width: 200, height: 200}}
+              style={styles.image}
             />
-            <Text style={styles.cardTitle}>{item.courseName}</Text>
-            <Text>{item.body}</Text>
+            <View>
+              <Text style={styles.cardTitle}>{item.courseName}</Text>
+            </View>
           </TouchableOpacity>
         )}
       />
@@ -83,15 +83,19 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   card: {
+    display: 'flex',
+    flexDirection: 'row',
     padding: 20,
     marginBottom: 20,
     backgroundColor: 'white',
     borderRadius: 10,
+    gap: 10,
   },
   cardTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+    width: 200,
   },
   floatingButton: {
     position: 'absolute',
@@ -117,5 +121,10 @@ const styles = StyleSheet.create({
     width: 65,
     height: 35,
     borderRadius: 20,
+  },
+  image: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
   },
 });
